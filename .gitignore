@@ -6,6 +6,29 @@
 
 # BlueJ files
 *.ctxt
+# Intellij
+*.iml
+*.ipr
+*.iws
+.idea
+*.eml
+.shelf
+
+# Eclipse
+.classpath
+.project
+.settings/
+bin/
+
+# Gradle & builds
+build
+build-cache
+target
+out
+.gradle
+classes
+.gradletasknamecache
+*.log
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
