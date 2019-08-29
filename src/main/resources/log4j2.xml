@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%highlight{%d{HH:mm:ss.SSS} [%t] %level %logger{36} - %msg%n}{FATAL=bright magenta, ERROR=bright red, WARN=bright yellow, INFO=bright white, DEBUG=bright blue, TRACE=green}" disableAnsi="false" />
+		</Console>
+		
+		<RollingFile name="MainLogs" fileName="${env:CATALINA_BASE}/logs/mainLogs.log" filePattern="${env:CATALINA_BASE}/logs/archive/$${date:yyyy-MM}/mainlogs-%d{yyyyMMdd_HHmmss}.log.zip">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %level %logger{36} - %msg%n" disableAnsi="true" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="10MB" />
+				<TimeBasedTriggeringPolicy interval="86400" modulate="false"/>
+			</Policies>
+		</RollingFile>
+
+		<RollingFile name="ErrorsFile" fileName="${env:CATALINA_BASE}/logs/errors.log" filePattern="${env:CATALINA_BASE}/logs/archive/$${date:yyyy-MM}/errors-%d{yyyyMMdd_HHmmss}.log.zip">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %level %logger{36} - %msg%n" disableAnsi="true" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="10MB" />
+				<TimeBasedTriggeringPolicy interval="86400" modulate="false"/>
+			</Policies>
+		</RollingFile>
+
+	</Appenders>
+	<Loggers>
+		<Root level="INFO">
+			<AppenderRef ref="Console" level="INFO" />
+			<AppenderRef ref="MainLogs" level="INFO" />
+			<AppenderRef ref="ErrorsFile" level="ERROR" />
+		</Root>
+	</Loggers>
+</Configuration>
