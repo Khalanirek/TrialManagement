@@ -1,4 +1,4 @@
-package com.twins.configuration;
+package com.trialman.configuration;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 

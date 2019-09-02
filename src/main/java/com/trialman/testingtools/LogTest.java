@@ -1,4 +1,4 @@
-package com.twins.testingtools;
+package com.trialman.testingtools;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

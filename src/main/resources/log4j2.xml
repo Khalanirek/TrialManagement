@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="INFO">
+<Configuration status="TRACE">
 	<Appenders>
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout pattern="%highlight{%d{HH:mm:ss.SSS} [%t] %level %logger{36} - %msg%n}{FATAL=bright magenta, ERROR=bright red, WARN=bright yellow, INFO=bright white, DEBUG=bright blue, TRACE=green}" disableAnsi="false" />
@@ -24,7 +24,7 @@
 	</Appenders>
 	<Loggers>
 		<Root level="INFO">
-			<AppenderRef ref="Console" level="INFO" />
+			<AppenderRef ref="Console" level="TRACE" />
 			<AppenderRef ref="MainLogs" level="INFO" />
 			<AppenderRef ref="ErrorsFile" level="ERROR" />
 		</Root>

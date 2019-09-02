@@ -1,4 +1,4 @@
-package com.twins;
+package com.trialman;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
