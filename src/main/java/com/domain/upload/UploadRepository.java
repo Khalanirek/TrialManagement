@@ -6,8 +6,6 @@ import java.util.Optional;
 
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,11 +17,12 @@ public class UploadRepository {
 		return true;
 	}
 
-	public Optional<ResponseEntity<Resource>> getFile(File file){
-		Resource fileSystemResource = new FileSystemResource(file);
-			return Optional.of(ResponseEntity.ok()
-	                .contentType(MediaType.MULTIPART_FORM_DATA)
-	                .body(fileSystemResource));
+	public Optional<Resource> getFile(File file){
+		Resource fileSystemResource = null;
+		if (file.exists()) {
+			fileSystemResource = new FileSystemResource(file);
+		}
+		return Optional.of(fileSystemResource);
 	}
 
 	public boolean deleteFile(File file) {

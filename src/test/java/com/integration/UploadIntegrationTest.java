@@ -43,21 +43,63 @@ public class UploadIntegrationTest extends MvcIntegrationTest {
 				new FileInputStream(ResourceUtils.getFile("classpath:files/multipartTest.txt")));
 		MvcResult postResult = multipartPost(UPLOAD_URI + "/upload").performMultipartRequest(multipartFile);
 		assertEquals(HttpStatus.OK.value(), postResult.getResponse().getStatus());
+		assertEquals("true", postResult.getResponse().getContentAsString());
+	}
+
+	@Test
+	void shouldNotSaveMultipartFileIfWrongName() throws Exception {
+		multipartFile = new MockMultipartFile("multipartFile",
+				"multipartTest",
+				"multipart/form-data",
+				new FileInputStream(ResourceUtils.getFile("classpath:files/multipartTest.txt")));
+		MvcResult postResult = multipartPost(UPLOAD_URI + "/upload").performMultipartRequest(multipartFile);
+		assertEquals(HttpStatus.OK.value(), postResult.getResponse().getStatus());
+		assertEquals("false", postResult.getResponse().getContentAsString());
+	}
+
+	@Test
+	void shouldThrowExceptionWhenSaveWithForbidenName() throws Exception {
+		multipartFile = new MockMultipartFile("multipartFile",
+				"  . ",
+				"multipart/form-data",
+				new FileInputStream(ResourceUtils.getFile("classpath:files/multipartTest.txt")));
+		MvcResult postResult = multipartPost(UPLOAD_URI + "/upload").performMultipartRequest(multipartFile);
+		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), postResult.getResponse().getStatus());
 	}
 
 	@Test
 	void shouldGetMultipartFile() throws Exception {
+		multipartFile = new MockMultipartFile("multipartFile",
+				"multipartTest.txt",
+				"multipart/form-data",
+				new FileInputStream(ResourceUtils.getFile("classpath:files/multipartTest.txt")));
+		multipartPost(UPLOAD_URI + "/upload").performMultipartRequest(multipartFile);
 		MvcResult getResult = get(UPLOAD_URI + "/download/multipartTest.txt").performMultipart();
 		assertEquals(HttpStatus.OK.value(), getResult.getResponse().getStatus());
 	}
 
 	@Test
-	void shouldUpdateMultipartFile() {
-
+	void shouldNotGetMultipartFileIfNotExists() throws Exception {
+		MvcResult getResult = get(UPLOAD_URI + "/download/notExists.txt").performMultipart();
+		assertEquals(HttpStatus.NOT_FOUND.value(), getResult.getResponse().getStatus());
 	}
 
 	@Test
-	void shouldDeleteMultpartFile() {
+	void shouldDeleteMultpartFile() throws Exception {
+		multipartFile = new MockMultipartFile("multipartFile",
+				"multipartTestDelete.txt",
+				"multipart/form-data",
+				new FileInputStream(ResourceUtils.getFile("classpath:files/multipartTestDelete.txt")));
+		multipartPost(UPLOAD_URI + "/upload").performMultipartRequest(multipartFile);
+		MvcResult deleteResult = delete(UPLOAD_URI + "/delete/multipartTestDelete.txt").performMultipart();
+		assertEquals(HttpStatus.OK.value(), deleteResult.getResponse().getStatus());
+		assertEquals("true", deleteResult.getResponse().getContentAsString());
+	}
 
+	@Test
+	void shouldNotDeleteMultipartFileIfNotExists() throws Exception {
+		MvcResult deleteResult = delete(UPLOAD_URI + "/delete/notExists.txt").performMultipart();
+		assertEquals(HttpStatus.OK.value(), deleteResult.getResponse().getStatus());
+		assertEquals("false", deleteResult.getResponse().getContentAsString());
 	}
 }

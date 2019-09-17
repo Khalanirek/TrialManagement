@@ -70,7 +70,7 @@ public class MvcRequestBuilder {
     }
 
     public MvcResult performMultipart() throws Exception {
-    	return mockMvc.perform(requestBuilder)
+    	return mockMvc.perform(requestBuilder.characterEncoding("UTF-8"))
     			.andDo(print())
     			.andReturn();
     }

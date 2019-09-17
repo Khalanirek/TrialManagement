@@ -7,7 +7,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,9 +29,13 @@ public class UploadService {
 
 		String destination = env.getProperty("CATALINA_BASE") + "\\uploadedFiles\\"  + multipartFile.getOriginalFilename();
 	    File file = new File(destination);
+	    int endIndex = destination.lastIndexOf(".");
+	    if (endIndex < 1) {
+	    	return false;
+	    }
 	    int i =  1;
 	    while(file.exists()) {
-	    	int endIndex = destination.lastIndexOf(".");
+	    	endIndex = destination.lastIndexOf(".");
 	    	String newDestination = destination.substring(0, endIndex) + " (" + i + ")" + destination.substring(endIndex);
 	    	file = new File(newDestination);
 	    	i++;
@@ -40,9 +43,9 @@ public class UploadService {
 	    return uploadRepository.saveFile(multipartFile, file);
 	}
 
-	public ResponseEntity<Resource> getMultipartFile(String fileName) throws UploadResourceNotFoundException {
+	public Resource getMultipartFile(String fileName) throws UploadResourceNotFoundException {
 		String destination = env.getProperty("CATALINA_BASE") + "\\uploadedFiles\\" + fileName;
-		Optional<ResponseEntity<Resource>> file = uploadRepository.getFile(new File(destination));
+		Optional<Resource> file = uploadRepository.getFile(new File(destination));
 		return file.orElseThrow(() -> new UploadResourceNotFoundException(fileName));
 	}
 
@@ -52,7 +55,7 @@ public class UploadService {
 	    return uploadRepository.saveFile(multipartFile, file);
 	}
 
-	public boolean deleteMultipartFile(String fileName) throws IllegalStateException, IOException {
+	public boolean deleteMultipartFile(String fileName) {
 		String destination = env.getProperty("CATALINA_BASE") + "\\uploadedFiles\\"  + fileName;
 		File file = new File(destination);
 		return uploadRepository.deleteFile(file);

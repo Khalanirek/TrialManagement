@@ -1,6 +1,7 @@
 package com.unit.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -23,8 +24,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,14 +66,22 @@ class UploadServiceTest {
 	}
 
 	@Test
+	void shouldNotSaveMultipartFileWithEmptyExtension() throws IllegalStateException, IOException {
+		multipartFile = new MockMultipartFile("multipartFile",
+				"multipartTest",
+				"multipart/form-data",
+				new FileInputStream(ResourceUtils.getFile("classpath:files/multipartTest.txt")));
+		when(env.getProperty("CATALINA_BASE")).thenReturn("src/test/resources/files");
+		assertFalse(uploadService.saveMultipartFile(multipartFile));
+		verify(uploadRepository, never()).saveFile(multipartFile, file);
+	}
+
+	@Test
 	void shouldGetMultipartFile() throws UploadResourceNotFoundException {
 		Resource fileSystemResource = new FileSystemResource(file);
-		ResponseEntity<Resource> expectedFile = ResponseEntity.ok()
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .body(fileSystemResource);
 		when(env.getProperty("CATALINA_BASE")).thenReturn("src/test/resources/files");
-		when(uploadRepository.getFile(file)).thenReturn(Optional.of(expectedFile));
-		assertEquals(expectedFile, uploadService.getMultipartFile(file.getName()));
+		when(uploadRepository.getFile(file)).thenReturn(Optional.of(fileSystemResource));
+		assertEquals(fileSystemResource, uploadService.getMultipartFile(file.getName()));
 	}
 
 	@Test

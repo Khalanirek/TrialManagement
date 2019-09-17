@@ -21,8 +21,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,10 +59,7 @@ class UploadRepositoryTest {
 	@Test
 	void shouldGetFile() {
 		Resource fileSystemResource = new FileSystemResource(file);
-		ResponseEntity<Resource> expectedFile = ResponseEntity.ok()
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .body(fileSystemResource);
-		assertEquals(expectedFile, uploadRepository.getFile(file).get());
+		assertEquals(fileSystemResource, uploadRepository.getFile(file).get());
 	}
 
 	@Test

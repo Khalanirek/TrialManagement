@@ -1,6 +1,7 @@
 package com.unit.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -23,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.controller.UploadController;
 import com.domain.upload.UploadResourceNotFoundException;
@@ -52,7 +54,14 @@ public class UploadControllerTest {
 	@Test
 	void shouldSaveMultipartFile() throws IllegalStateException, IOException {
 		when(uploadService.saveMultipartFile(multipartFile)).thenReturn(true);
-		assertTrue(uploadController.handleFileUpload(multipartFile));
+		assertTrue(uploadController.handleFileUpload(multipartFile).getBody());
+		verify(uploadService).saveMultipartFile(multipartFile);
+	}
+
+	@Test
+	void shouldTrowResponseStatusExceptionWhenExceptionInSaveMultipartFile() throws IllegalStateException, IOException {
+		when(uploadService.saveMultipartFile(multipartFile)).thenThrow(IOException.class);
+		assertThrows(ResponseStatusException.class, () -> uploadController.handleFileUpload(multipartFile).getBody());
 		verify(uploadService).saveMultipartFile(multipartFile);
 	}
 
@@ -62,21 +71,20 @@ public class UploadControllerTest {
 		ResponseEntity<Resource> expectedFile = ResponseEntity.ok()
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .body(fileSystemResource);
-		when(uploadService.getMultipartFile(multipartFile.getName())).thenReturn(expectedFile);
+		when(uploadService.getMultipartFile(multipartFile.getName())).thenReturn(fileSystemResource);
 		assertEquals(expectedFile, uploadController.handleFileDownload(multipartFile.getName()));
 	}
 
 	@Test
-	void shouldUpdateMultipartFile() throws IllegalStateException, IOException {
-		when(uploadService.updateMultipartFile(multipartFile)).thenReturn(true);
-		assertTrue(uploadController.handleFileUpdate(multipartFile));
-		verify(uploadService).updateMultipartFile(multipartFile);
+	void shouldThrowResponseStatusExceptionWhenExceptionInGetMultipartFile() throws UploadResourceNotFoundException{
+		when(uploadService.getMultipartFile(multipartFile.getName())).thenThrow(UploadResourceNotFoundException.class);
+		assertThrows(ResponseStatusException.class, () -> uploadController.handleFileDownload(multipartFile.getName()));
 	}
 
 	@Test
 	void shouldDeleteMultipartFile() throws IllegalStateException, IOException {
 		when(uploadService.deleteMultipartFile(multipartFile.getName())).thenReturn(true);
-		assertTrue(uploadController.handleFileDelete(multipartFile.getName()));
+		assertTrue(uploadController.handleFileDelete(multipartFile.getName()).getBody());
 		verify(uploadService).deleteMultipartFile(multipartFile.getName());
 	}
 }
