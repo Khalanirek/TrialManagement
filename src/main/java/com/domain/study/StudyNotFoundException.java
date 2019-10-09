@@ -1,6 +1,8 @@
 package com.domain.study;
 
-public class StudyNotFoundException extends Exception{
+import com.domain.error.ObjectNotFoundException;
+
+public class StudyNotFoundException extends ObjectNotFoundException{
 	public StudyNotFoundException(Long studyId) {
 		super(String.format("Study with id %d not found", studyId));
 	}

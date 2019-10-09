@@ -22,7 +22,7 @@ public class UploadRepository {
 		if (file.exists()) {
 			fileSystemResource = new FileSystemResource(file);
 		}
-		return Optional.of(fileSystemResource);
+		return Optional.ofNullable(fileSystemResource);
 	}
 
 	public boolean deleteFile(File file) {

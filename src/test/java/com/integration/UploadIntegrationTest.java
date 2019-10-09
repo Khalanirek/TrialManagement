@@ -80,7 +80,8 @@ public class UploadIntegrationTest extends MvcIntegrationTest {
 
 	@Test
 	void shouldNotGetMultipartFileIfNotExists() throws Exception {
-		MvcResult getResult = get(UPLOAD_URI + "/download/notExists.txt").performMultipart();
+		// Removed txt because of MvcResult. It gests extension to calculate acceptable type. If txt it accept plain/text
+		MvcResult getResult = get(UPLOAD_URI + "/download/notExists").performMultipart();
 		assertEquals(HttpStatus.NOT_FOUND.value(), getResult.getResponse().getStatus());
 	}
 

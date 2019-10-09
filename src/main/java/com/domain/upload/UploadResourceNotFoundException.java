@@ -1,6 +1,8 @@
 package com.domain.upload;
 
-public class UploadResourceNotFoundException extends Exception {
+import com.domain.error.ObjectNotFoundException;
+
+public class UploadResourceNotFoundException extends ObjectNotFoundException {
 	public UploadResourceNotFoundException(String path) {
 		super(String.format("Upload resource %s not found", path));
 	}

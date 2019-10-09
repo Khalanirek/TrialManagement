@@ -14,6 +14,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.domain.user.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -28,21 +31,26 @@ public class Study {
 	@Column(name="study_id")
 	private Long studyId;
 
+	@NotBlank @Size(min=1, max=50)
 	@Column(name="title")
 	private String title;
 
+	@NotNull
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	@Column(name="start_date")
 	private Date startDate;
 
+	@NotNull
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	@Column(name="end_date")
 	private Date endDate;
 
+	@NotNull
 	@OneToOne
 	@JoinColumn(name="ownder_id")
 	private User owner;
 
+	@NotNull
 	@JsonIgnore
 	@ManyToMany
 	@JoinTable(name="study_user",

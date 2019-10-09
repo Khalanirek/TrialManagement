@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.domain.upload.UploadResourceNotFoundException;
 import com.service.UploadService;
 
 @RestController
@@ -32,14 +33,10 @@ public class UploadController {
 	}
 
 	@RequestMapping(value = "/download/{fileName:.+}", method = RequestMethod.GET)
-	public ResponseEntity<Resource> handleFileDownload(@PathVariable String fileName){
-		try {
+	public ResponseEntity<Resource> handleFileDownload(@PathVariable String fileName) throws UploadResourceNotFoundException{
 			return ResponseEntity.ok()
 	                .contentType(MediaType.MULTIPART_FORM_DATA)
 	                .body(uploadService.getMultipartFile(fileName));
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-		}
 	}
 
 	@RequestMapping(value = "/delete/{fileName:.+}", method = RequestMethod.DELETE)

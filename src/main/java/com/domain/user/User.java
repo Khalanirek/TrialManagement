@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name="application_user")
@@ -16,12 +18,15 @@ public class User {
 	@Column(name="user_id")
 	private Long userId;
 
+	@NotBlank @Size(min=1, max=50)
 	@Column(name="name")
 	private String name;
 
+	@NotBlank @Size(min=1, max=50)
 	@Column(name="surname")
 	private String surname;
 
+	@NotBlank @Size(min=1, max=50)
 	@Column(name="job_position")
 	private String jobPosition;
 

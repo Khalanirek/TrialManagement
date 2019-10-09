@@ -78,7 +78,7 @@ public class UploadControllerTest {
 	@Test
 	void shouldThrowResponseStatusExceptionWhenExceptionInGetMultipartFile() throws UploadResourceNotFoundException{
 		when(uploadService.getMultipartFile(multipartFile.getName())).thenThrow(UploadResourceNotFoundException.class);
-		assertThrows(ResponseStatusException.class, () -> uploadController.handleFileDownload(multipartFile.getName()));
+		assertThrows(UploadResourceNotFoundException.class, () -> uploadController.handleFileDownload(multipartFile.getName()));
 	}
 
 	@Test

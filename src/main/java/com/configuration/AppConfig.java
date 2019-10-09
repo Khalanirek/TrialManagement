@@ -14,7 +14,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableWebMvc
 @PropertySource("classpath:/com/configuration/application.properties")
-@Import(DbConfiguration.class)
+@Import({DbConfiguration.class, SpringSecurityConfig.class})
 public class AppConfig implements WebMvcConfigurer{
 
     @Autowired
